@@ -55,7 +55,7 @@ jobs:
           retention-days: 14
       - name: Upload coverage to Codecov
         if: matrix.os == 'ubuntu-latest' && matrix.ruby == '4.0'
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v7
         with:
           files: coverage/coverage.json
           disable_search: true
