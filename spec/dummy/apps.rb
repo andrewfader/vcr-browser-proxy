@@ -9,8 +9,10 @@ module Dummy
   REGISTERED_CALLBACK = "http://localhost:3000/callback"
 
   def self.html(title, body)
+    # Avoid a timing-dependent /favicon.ico request appearing only on replay.
+    head = %(<title>#{title}</title><link rel="icon" href="data:,">)
     [200, { "content-type" => "text/html; charset=utf-8" },
-     ["<!doctype html><html><head><title>#{title}</title></head><body>#{body}</body></html>"]]
+     ["<!doctype html><html><head>#{head}</head><body>#{body}</body></html>"]]
   end
 
   # The app under test. Capybara serves it on loopback, which Chrome reaches
