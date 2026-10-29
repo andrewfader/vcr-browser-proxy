@@ -17,7 +17,8 @@ Excon adapter then see the browser's traffic exactly as they see the server's:
 record once against the real provider, replay hermetically in CI.
 
 - **No EventMachine.** One Ruby thread per connection, so a slow upstream
-  stalls only its own connection. (puffing-billy generates a keypair per host on
+  stalls only its own connection. (the venerable [puffing-billy](https://github.com/oesmith/puffing-billy),
+  which is an important piece of prior art and still fine for lotsa stuff!, generates a keypair per host on
   its single reactor thread and patches `Kernel#sleep` process-wide.)
 - **One certificate for every host**, generated at boot. Chrome is told to trust
   exactly that key, through `--ignore-certificate-errors-spki-list`.
