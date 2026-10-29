@@ -1,8 +1,11 @@
 # Changelog
 
-## 0.1.0 
+## 0.1.0
 
 First release
+
+- Ruby and Chrome CI matrix, coverage reports, gem installation smoke test,
+  README badges, and automated dependency update checks.
 
 - Threaded MITM proxy that re-issues browser requests through Excon, so VCR and
   WebMock see them.

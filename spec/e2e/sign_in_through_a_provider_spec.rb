@@ -25,8 +25,14 @@ RSpec.describe "Signing in through a third-party provider", :e2e, type: :feature
   before do
     Capybara.server = :puma, { Silent: true }
     Capybara.app = Dummy::RelyingParty.new
-    VcrBrowserProxy::Cuprite.register_driver(base_options: { headless: true, window_size: [1024, 768], timeout: 15,
-                                                             process_timeout: 30 })
+    options = {
+      headless: true, window_size: [1024, 768], timeout: 15, process_timeout: 30,
+      # Hosted runners cannot always provide Chrome's OS sandbox. These tests
+      # only visit the local dummy app and provider; keep this out of gem defaults.
+      browser_options: ENV["GITHUB_ACTIONS"] == "true" ? { "no-sandbox" => nil } : {},
+      logger: ENV["GITHUB_ACTIONS"] == "true" ? $stderr : nil
+    }
+    VcrBrowserProxy::Cuprite.register_driver(base_options: options)
   end
 
   let(:provider) { Dummy::Provider.new }

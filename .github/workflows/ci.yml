@@ -4,6 +4,11 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -32,6 +37,20 @@ jobs:
         run: bundle exec rake e2e
         env:
           BROWSER_PATH: ${{ steps.chrome.outputs.chrome-path }}
+      - name: Save coverage reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ matrix.os }}-ruby-${{ matrix.ruby }}
+          path: coverage/
+          retention-days: 14
+      - name: Upload coverage to Codecov
+        if: matrix.os == 'ubuntu-latest' && matrix.ruby == '4.0'
+        uses: codecov/codecov-action@v5
+        with:
+          files: coverage/coverage.json
+          disable_search: true
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   lint:
     runs-on: ubuntu-latest
@@ -42,6 +61,23 @@ jobs:
           ruby-version: "4.0"
           bundler-cache: true
       - run: bundle exec rubocop
+
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2"
+      - run: gem build vcr-browser-proxy.gemspec
+      - run: gem install --no-document ./vcr-browser-proxy-*.gem
+      - name: Smoke test the installed gem outside the checkout
+        working-directory: /tmp
+        run: ruby -rvcr_browser_proxy -e 'VcrBrowserProxy.open { |proxy| puts proxy.class }'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gem
+          path: "*.gem"
 
   bench:
     runs-on: ubuntu-latest

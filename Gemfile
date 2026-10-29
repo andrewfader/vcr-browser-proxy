@@ -17,5 +17,6 @@ gem "rubocop-performance", require: false
 gem "rubocop-rake", require: false
 gem "rubocop-rspec", require: false
 gem "simplecov", require: false
+gem "simplecov_json_formatter", require: false
 gem "vcr"
 gem "webmock"

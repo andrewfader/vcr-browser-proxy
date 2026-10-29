@@ -2,7 +2,10 @@
 
 if ENV["COVERAGE"] != "false"
   require "simplecov"
+  require "simplecov_json_formatter"
+  SimpleCov.formatters = [SimpleCov::Formatter::HTMLFormatter, SimpleCov::Formatter::JSONFormatter]
   SimpleCov.start do
+    track_files "lib/**/*.rb"
     enable_coverage :branch
     add_filter "/spec/"
     minimum_coverage line: 95, branch: 85

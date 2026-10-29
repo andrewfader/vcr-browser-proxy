@@ -1,5 +1,11 @@
 # vcr-browser-proxy
 
+[![CI](https://github.com/andrewfader/vcr-browser-proxy/actions/workflows/ci.yml/badge.svg)](https://github.com/andrewfader/vcr-browser-proxy/actions/workflows/ci.yml)
+[![Coverage](https://codecov.io/gh/andrewfader/vcr-browser-proxy/branch/main/graph/badge.svg)](https://codecov.io/gh/andrewfader/vcr-browser-proxy)
+[![Gem version](https://img.shields.io/gem/v/vcr-browser-proxy.svg)](https://rubygems.org/gems/vcr-browser-proxy)
+[![Ruby version](https://img.shields.io/gem/required-ruby-version/vcr-browser-proxy.svg)](https://rubygems.org/gems/vcr-browser-proxy)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.txt)
+
 Record a real browser's HTTPS into the same VCR cassette as your server's own calls.
 
 System specs that drive a real OAuth login, a third-party widget, or a
@@ -167,6 +173,7 @@ doesn't happen; everything still works.
 ## Development
 
 ```sh
+bundle install
 bundle exec rake          # RuboCop and the specs
 bundle exec rake e2e      # also the specs that drive real Chrome through the proxy
 bundle exec rake bench    # throughput against a loopback upstream
@@ -177,6 +184,30 @@ real sockets against a loopback upstream, integration specs with real VCR and
 WebMock, and end-to-end specs in which headless Chrome signs in to a dummy app
 through a fake identity provider, records the flow, then replays it with the
 provider receiving no requests.
+
+Coverage runs by default and requires at least 95% line coverage and 85% branch
+coverage, including library files that were never loaded. Open
+`coverage/index.html` for the local report; `COVERAGE=false` disables it for
+debugging. CI saves each matrix job's report as an artifact and uploads the
+Ubuntu Ruby 4.0 report to Codecov. Maintainers should enable the repository in
+[Codecov](https://codecov.io/gh/andrewfader/vcr-browser-proxy) and configure the
+`CODECOV_TOKEN` Actions secret for uploads.
+
+## Releasing
+
+Update `lib/vcr_browser_proxy/version.rb` and `CHANGELOG.md`, then run:
+
+```sh
+bundle exec rake
+bundle exec rake e2e  # requires Chrome; set BROWSER_PATH if needed
+bundle exec rake build
+```
+
+Commit the release changes and wait for CI to pass. With RubyGems credentials
+configured using `gem signin`, run `bundle exec rake release` to tag the version,
+push the Git commit and tag, and publish the built gem to RubyGems.org. RubyGems
+may prompt for an MFA code. For a manual upload of an already built release,
+use `gem push pkg/vcr-browser-proxy-VERSION.gem`.
 
 ## License
 

@@ -1,5 +1,6 @@
 Gemfile.lock
 *.gem
+pkg/
 coverage/
 tmp/
 .rspec_status
