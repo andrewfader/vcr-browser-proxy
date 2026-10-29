@@ -32,11 +32,20 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
       - uses: browser-actions/setup-chrome@v2
+        if: runner.os != 'macOS'
         id: chrome
+      - name: Use the signed Chrome app on macOS
+        if: runner.os == 'macOS'
+        run: |
+          "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --version
+          echo 'BROWSER_PATH=/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' >> "$GITHUB_ENV"
+      - name: Use downloaded Chrome on Linux
+        if: runner.os == 'Linux'
+        env:
+          CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
+        run: echo "BROWSER_PATH=$CHROME_PATH" >> "$GITHUB_ENV"
       - name: Specs, including the Chrome end-to-end specs
         run: bundle exec rake e2e
-        env:
-          BROWSER_PATH: ${{ steps.chrome.outputs.chrome-path }}
       - name: Save coverage reports
         if: always()
         uses: actions/upload-artifact@v4
