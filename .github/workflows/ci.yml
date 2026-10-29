@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        ruby: ["3.2", "3.3", "3.4", "4.0", head]
+        include:
+          - os: macos-latest
+            ruby: "4.0"
+    continue-on-error: ${{ matrix.ruby == 'head' }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - uses: browser-actions/setup-chrome@v2
+        id: chrome
+      - name: Specs, including the Chrome end-to-end specs
+        run: bundle exec rake e2e
+        env:
+          BROWSER_PATH: ${{ steps.chrome.outputs.chrome-path }}
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "4.0"
+          bundler-cache: true
+      - run: bundle exec rubocop
+
+  bench:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "4.0"
+          bundler-cache: true
+      - run: bundle exec rake bench

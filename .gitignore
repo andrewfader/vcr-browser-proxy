@@ -1,0 +1,5 @@
+Gemfile.lock
+*.gem
+coverage/
+tmp/
+.rspec_status

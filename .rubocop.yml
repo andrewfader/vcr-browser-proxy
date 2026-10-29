@@ -1,0 +1,64 @@
+plugins:
+  - rubocop-performance
+  - rubocop-rake
+  - rubocop-rspec
+
+AllCops:
+  TargetRubyVersion: 3.2
+  NewCops: enable
+  SuggestExtensions: false
+  Exclude:
+    - vendor/**/*
+    - tmp/**/*
+    - coverage/**/*
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+Style/StringLiteralsInInterpolation:
+  EnforcedStyle: double_quotes
+Style/Documentation:
+  Enabled: false
+Layout/LineLength:
+  Max: 120
+
+# Linear, readable methods; length alone is not a design problem.
+Metrics/MethodLength:
+  Enabled: false
+Metrics/AbcSize:
+  Enabled: false
+Metrics/ClassLength:
+  Enabled: false
+Metrics/BlockLength:
+  Exclude:
+    - spec/**/*
+    - "*.gemspec"
+Metrics/ParameterLists:
+  CountKeywordArgs: false
+
+# Specs here describe behaviors across a real proxy, a real upstream and, in
+# spec/e2e, a real browser, so examples assert several facts about one flow.
+RSpec/MultipleExpectations:
+  Enabled: false
+RSpec/ExampleLength:
+  Enabled: false
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+RSpec/NestedGroups:
+  Max: 4
+RSpec/DescribeClass:
+  Exclude:
+    - spec/integration/**/*
+    - spec/e2e/**/*
+    - spec/vcr_browser_proxy/rspec_spec.rb
+RSpec/InstanceVariable:
+  Exclude:
+    - spec/integration/**/*
+    - spec/e2e/**/*
+
+# The proxy's request loop branches on what the wire hands it (CONNECT or not,
+# allowed or not, HEAD, bodiless statuses, retryable errors). 10 keeps each of
+# those methods linear without splitting a request's handling across files.
+Metrics/CyclomaticComplexity:
+  Max: 10
+Metrics/PerceivedComplexity:
+  Max: 10
