@@ -6,7 +6,7 @@
 [![Ruby version](https://img.shields.io/gem/required-ruby-version/vcr-browser-proxy.svg)](https://rubygems.org/gems/vcr-browser-proxy)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.txt)
 
-Record a real browser's HTTPS into the same VCR cassette as your server's own calls.
+Record a real browser's HTTPS into the same [VCR](https://github.com/vcr/vcr) cassette as your server's own calls.
 
 System specs that drive a real OAuth login, a third-party widget, or a
 presigned S3 download have a gap: VCR only sees requests made from the Ruby
