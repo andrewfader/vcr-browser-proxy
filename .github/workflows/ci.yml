@@ -48,7 +48,7 @@ jobs:
         run: bundle exec rake e2e
       - name: Save coverage reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-${{ matrix.os }}-ruby-${{ matrix.ruby }}
           path: coverage/
@@ -83,7 +83,7 @@ jobs:
       - name: Smoke test the installed gem outside the checkout
         working-directory: /tmp
         run: ruby -rvcr_browser_proxy -e 'VcrBrowserProxy.open { |proxy| puts proxy.class }'
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: gem
           path: "*.gem"
